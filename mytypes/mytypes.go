@@ -1,11 +1,37 @@
 package mytypes
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 type MyInt int
 type MyString string
 type MyBuilder struct {
 	Contents strings.Builder
+	hidden   bool
+}
+
+func NewMyBuilder() (*MyBuilder, error) {
+	e := MyBuilder{hidden: true}
+	return &e, nil
+}
+
+func Thing() (string, error) {
+	nb, err := NewMyBuilder()
+	nb.Contents.WriteString("Hello World!")
+	if err != nil {
+		return "", errors.New("bad...")
+	}
+	if nb.IsVisible() == true {
+		return nb.Contents.String(), nil
+	} else {
+		return "", errors.New("this is also bad")
+	}
+}
+
+func (mb *MyBuilder) IsVisible() bool {
+	return mb.hidden
 }
 
 type StringUppercaser struct {
